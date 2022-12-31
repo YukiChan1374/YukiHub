@@ -1,11 +1,11 @@
 local CurrentGame = tostring(game.PlaceId)
 
 if CurrentGame == "5780309044" then
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/StandsAwakening'))()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChanAh/YukiHub/main/StandsAwakening'))()
 elseif CurrentGame == "6708206173" then
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/RateMyAvatar'))()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChanAh/YukiHub/main/RateMyAvatar'))()
 elseif CurrentGame == "6099256669" then
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/AMenacingTimeline'))()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChanAh/YukiHub/main/AMenacingTimeline'))()
 else
 	warn("Game Not Supported!")
 end

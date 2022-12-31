@@ -6,6 +6,6 @@ local SupportedGames = {
 
 for _, v in pairs(SupportedGames) do
 	if v == CurrentGame then
-		print("Supported")
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/StandsAwakening'))()
 	end
 end

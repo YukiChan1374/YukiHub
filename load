@@ -2,7 +2,8 @@ local CurrentGame = tostring(game.GameId)
 local IsSupported = false
 
 local SupportedGames = {
-	"2050890865"
+	"2050890865",
+	"6708206173"
 }
 
 for _, v in pairs(SupportedGames) do

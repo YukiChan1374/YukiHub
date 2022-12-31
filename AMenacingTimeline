@@ -35,21 +35,6 @@ local Window = Rayfield:CreateWindow({
 		FolderName = nil,
 		FileName = "Yuki Hub"
 	},
-        Discord = {
-        	Enabled = false,
-        	Invite = "", 
-        	RememberJoins = true 
-        },
-	KeySystem = false,
-	KeySettings = {
-		Title = "Yuki Hub",
-		Subtitle = "Key System",
-		Note = "This is a private script! >_<",
-		FileName = "YukiKey",
-		SaveKey = false,
-		GrabKeyFromSite = false,
-		Key = "test"
-	}
 })
 
 Rayfield:Notify({

@@ -1,20 +1,12 @@
 local CurrentGame = tostring(game.GameId)
 local IsSupported = false
 
-local SupportedGames = {
-	"2050890865",
-	"6708206173"
-	
-}
-
-for i, v in pairs(SupportedGames) do
-	if v == CurrentGame and i == 1 then
-		IsSupported = true
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/StandsAwakening'))()
-	elseif v == CurrentGame and i == 2 then
-		IsSupported = true
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/RateMyAvatar'))()
-	end
+if CurrentGame == "2050890865" then
+	IsSupported = true
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/StandsAwakening'))()
+elseif CurrentGame == "6708206173" then
+	IsSupported = true
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/RateMyAvatar'))()
 end
 
 if not IsSupported then

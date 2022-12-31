@@ -1,0 +1,798 @@
+local currentws = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
+local currentjp = game.Players.LocalPlayer.Character.Humanoid.JumpPower
+getfenv().knock = false
+getfenv().ger = false
+getfenv().afk = false
+
+getfenv().Toggle1 = false --banknote
+getfenv().Toggle2 = false --Roka
+getfenv().Toggle3 = false --Arrow
+getfenv().Toggle4 = false --Frog
+getfenv().Toggle5 = false --VampireMask
+getfenv().Toggle6 = false --DioDiary
+getfenv().Toggle7 = false --ReqArrow
+getfenv().Toggle8 = false --ToxicChemicals
+getfenv().Toggle9 = false --Bone
+getfenv().Toggle10 = false --SamuraiDiary
+getfenv().Toggle11 = false --EnderPearl
+getfenv().Toggle12 = false --VolcanicRock
+getfenv().Toggle13 = false --HellArrow
+getfenv().Toggle14 = false --AjaMask
+getfenv().Toggle15 = false --TrueReqArrow
+getfenv().Toggle16 = false --OrnsteinSpear
+getfenv().Toggle17 = false --Red Heart
+getfenv().Toggle18 = false --PotPlatiniumDiary
+getfenv().Toggle19 = false --Camera
+getfenv().Toggle20 = false --DioSkull2
+getfenv().Toggle21 = false --UncannyKey
+
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+local Window = Rayfield:CreateWindow({
+	Name = "Stands Awakening",
+	LoadingTitle = "Yuki Hub",
+	LoadingSubtitle = "by Yuki♡#4985",
+})
+
+local Tab = Window:CreateTab("Local Player", 6961018885)
+local Tab2 = Window:CreateTab("Items", 4431164867)
+local Tab3 = Window:CreateTab("Map", 4483345607)
+local Tab4 = Window:CreateTab("Misc", 3605022185)
+
+--Tab
+local Slider = Tab:CreateSlider({
+	Name = "WalkSpeed",
+	Range = {16, 250},
+	Increment = 1,
+	Suffix = "Speed",
+	CurrentValue = currentws,
+	Flag = "Slider1",
+	Callback = function(Value)
+		if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+			game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+		end
+		--end
+	end,
+})
+
+local Slider = Tab:CreateSlider({
+	Name = "JumpPower",
+	Range = {50, 350},
+	Increment = 1,
+	Suffix = "Power",
+	CurrentValue = currentjp,
+	Flag = "Slider1",
+	Callback = function(Value)
+		if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+			game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+		end
+		--end
+	end,
+})
+
+local Button = Tab:CreateButton({
+	Name = "Anti-Timestop",
+	Callback = function()
+	
+		local gmt = getrawmetatable(game)
+		local old
+		old = hookfunction(gmt.__namecall, function(...)
+			local method = getnamecallmethod()
+			if method == "FireServer" and tostring(self) == "Anchor" then
+				return 
+			end
+			return old(...)
+		end)
+
+		Rayfield:Notify({
+			Title = "Yuki Hub",
+			Content = "Anti-Ts has been enabled!",
+			Duration = 6.5,
+			Image = 4483362458,
+		})
+		
+	end,
+})
+
+local Toggle = Tab:CreateToggle({
+	Name = "Anti-Ragdoll",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().knock = Value
+		if getfenv().knock then
+			antirag()
+		end
+	end,
+})
+
+local Button = Tab:CreateButton({
+	Name = "Anti-AFK (ON/OFF)",
+	Callback = function()
+		if getfenv().afk then
+			getfenv().afk = false
+			Rayfield:Notify({
+				Title = "Yuki Hub",
+				Content = "Anti-AFK has been disabled!",
+				Duration = 6.5,
+				Image = 4483362458,
+			})
+		else
+			getfenv().afk = true
+			Rayfield:Notify({
+				Title = "Yuki Hub",
+				Content = "Anti-AFK has been enabled!",
+				Duration = 6.5,
+				Image = 4483362458,
+			})
+		end
+		local vu = game:GetService("VirtualUser")
+		game:GetService("Players").LocalPlayer.Idled:connect(function()
+			if getfenv().afk then
+   				vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+  				wait(1)
+   				vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+			end
+		end)
+	end,
+})
+
+local Toggle = Tab:CreateToggle({
+	Name = "Infinite RTZ (GER ONLY)",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().ger = Value
+		if getfenv().ger then
+			rtz()
+		end
+	end,
+})
+
+--Tab2
+local Toggle = Tab2:CreateToggle({
+	Name = "Dio's Skull 2",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle20 = Value
+		if getfenv().Toggle20 then
+			DioSkull2()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Camera",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle19 = Value
+		if getfenv().Toggle19 then
+			Camera()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Pot Platinum's Diary",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle18 = Value
+		if getfenv().Toggle18 then
+			PotPlatiniumDiary()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Red Heart",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle17 = Value
+		if getfenv().Toggle17 then
+			RedHeart()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Uncanny Key",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle21 = Value
+		if getfenv().Toggle21 then
+			key()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Bone",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle9 = Value
+		if getfenv().Toggle9 then
+			Bone()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Ornstein's Spear",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle16 = Value
+		if getfenv().Toggle16 then
+			OrnsteinSpear()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "True Requiem Arrow",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle15 = Value
+		if getfenv().Toggle15 then
+			TrueReqArrow()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Aja Mask",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle14 = Value
+		if getfenv().Toggle14 then
+			AjaMask()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Hell Arrow",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle13 = Value
+		if getfenv().Toggle13 then
+			HellArrow()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Volcanic Rock",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle12 = Value
+		if getfenv().Toggle12 then
+			VolcanicRock()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Ender Pearl",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle11 = Value
+		if getfenv().Toggle11 then
+			EnderPearl()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Samurai Diary",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle10 = Value
+		if getfenv().Toggle10 then
+			SamuraiDiary()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Toxic Chemicals",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle8 = Value
+		if getfenv().Toggle8 then
+			ToxicChemical()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Requiem Arrow",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle7 = Value
+		if getfenv().Toggle7 then
+			ReqArrow()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "DIO's Diary",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle6 = Value
+		if getfenv().Toggle6 then
+			DioDiary()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Vampire Mask",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle5 = Value
+		if getfenv().Toggle5 then
+			VampireMask()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Frog",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle4 = Value
+		if getfenv().Toggle4 then
+			Frog()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Arrow",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle3 = Value
+		if getfenv().Toggle3 then
+			Arrow()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Rokakaka Fruit",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle2 = Value
+		if getfenv().Toggle2 then
+			RokaFruit()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Banknote",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().Toggle1 = Value
+		if getfenv().Toggle1 then
+			Banknote()
+		end
+	end,
+})
+
+--Tab3
+local Button = Tab3:CreateButton({
+	Name = "Stand Storage",
+	Callback = function()
+     	local clickdetector = game.Workspace.Map.Timmy.ClickDetector
+		fireclickdetector(clickdetector)
+	end,
+})
+
+local Button = Tab3:CreateButton({
+	Name = "Tom's Shop",
+	Callback = function()
+		local clickdetector = game.Workspace.Map.Tom.ClickDetector
+		fireclickdetector(clickdetector)
+	end,
+})
+
+
+local Button = Tab3:CreateButton({
+	Name = "Tim's Shop",
+	Callback = function()
+		local clickdetector = game.Workspace.Map.Tim.ClickDetector
+		fireclickdetector(clickdetector)
+	end,
+})
+
+local Button = Tab3:CreateButton({
+	Name = "Sally",
+	Callback = function()
+		local clickdetector = game.Workspace.Map.sallynpc.ClickDetector
+		fireclickdetector(clickdetector)
+	end,
+})
+
+local Button = Tab3:CreateButton({
+	Name = "Farming Zone",
+	Callback = function()
+		local clickdetector = game.Workspace.Sign.Sign.ClickDetector
+		fireclickdetector(clickdetector)
+	end,
+})
+--Tab4
+local Button = Tab4:CreateButton({
+	Name = "Destroy GUI",
+	Callback = function()
+		Rayfield:Notify("Yuki", "Goodbye!", 9613807893)
+		wait(2)
+		Rayfield:Destroy()
+	end,
+})
+
+--functions
+function antirag()
+	spawn(function()
+		while getfenv().knock do
+			game:GetService("RunService").RenderStepped:Wait()
+			if game.Players.LocalPlayer.Character:FindFirstChild("Knock") then
+				Rayfield:Notify("Ragdoll", "Ragdoll Removed from LocalPlayer", 4483362458)
+				game.Players.LocalPlayer.Character.Knock:Destroy()
+			end
+		end
+	end)
+end
+
+function rtz()
+	spawn(function()
+		while getfenv().ger do
+			task.wait()
+			local args = {
+    			[1] = "Alternate",
+    			[2] = "RTZ",
+    			[3] = true
+			}
+
+			game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
+		end
+	end)
+end
+
+-- ITEMS:
+function key()
+	spawn(function()
+		while getfenv().Toggle21 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Uncanny Key"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function Banknote()
+	spawn(function()
+		while getfenv().Toggle1 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Banknote"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function RokaFruit()
+	spawn(function()
+		while getfenv().Toggle2 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Rokakaka Fruit"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function Arrow()
+	spawn(function()
+		while getfenv().Toggle3 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Arrow"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function Frog()
+	spawn(function()
+		while getfenv().Toggle4 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Frog"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function VampireMask()
+	spawn(function()
+		while getfenv().Toggle5 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Vampire Mask"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function DioDiary()
+	spawn(function()
+		while getfenv().Toggle6 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "DIO's Diary"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function ReqArrow()
+	spawn(function()
+		while getfenv().Toggle7 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Requiem Arrow"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function ToxicChemical()
+	spawn(function()
+		while getfenv().Toggle8 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Toxic Chemicals"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function Bone()
+	spawn(function()
+		while getfenv().Toggle9 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Bone"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function SamuraiDiary()
+	spawn(function()
+		while getfenv().Toggle10 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Samurai Diary"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function EnderPearl()
+	spawn(function()
+		while getfenv().Toggle11 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Ender Pearl"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function VolcanicRock()
+	spawn(function()
+		while getfenv().Toggle12 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Volcanic Rock"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function HellArrow()
+	spawn(function()
+		while getfenv().Toggle13 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Hell Arrow"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function AjaMask()
+	spawn(function()
+		while getfenv().Toggle14 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Aja Mask"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function TrueReqArrow()
+	spawn(function()
+		while getfenv().Toggle15 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "True Requiem Arrow"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function OrnsteinSpear()
+	spawn(function()
+		while getfenv().Toggle16 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Ornstein's Spear"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function RedHeart()
+	spawn(function()
+		while getfenv().Toggle17 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Red Heart"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function PotPlatiniumDiary()
+	spawn(function()
+		while getfenv().Toggle18 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Pot Platinum's Diary"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function Camera()
+	spawn(function()
+		while getfenv().Toggle19 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Camera"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function DioSkull2()
+	spawn(function()
+		while getfenv().Toggle20 do
+			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+				if v:IsA("Tool") and v.Name == "Dio's Skull 2"  then
+					if v:FindFirstChild("Handle") then
+						firetouchinterest(v.Handle.TouchInterest.Parent, game.Players.LocalPlayer.Character.Head, 0)
+					end
+				end
+			end
+			wait()
+		end
+	end)
+end

@@ -1,7 +1,11 @@
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+local CurrentGame = tostring(game.GameId)
 
-local Window = Rayfield:CreateWindow({
-   Name = "Yuki Hub",
-   LoadingTitle = "Yuki Hub",
-   LoadingSubtitle = "by Yuki♡#4985",
-})
+local SupportedGames = {
+	"2050890865"
+}
+
+for _, v in pairs(SupportedGames) do
+	if v == CurrentGame then
+		print("Supported")
+	end
+end

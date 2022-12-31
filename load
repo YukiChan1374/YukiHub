@@ -1,7 +1,7 @@
-local CurrentGame = tostring(game.GameId)
+local CurrentGame = tostring(game.PlaceId)
 local IsSupported = false
 
-if CurrentGame == "2050890865" then
+if CurrentGame == "5780309044" then
 	IsSupported = true
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/StandsAwakening'))()
 elseif CurrentGame == "6708206173" then

@@ -1,14 +1,11 @@
 local CurrentGame = tostring(game.PlaceId)
-local IsSupported = false
 
 if CurrentGame == "5780309044" then
-	IsSupported = true
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/StandsAwakening'))()
 elseif CurrentGame == "6708206173" then
-	IsSupported = true
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/RateMyAvatar'))()
-end
-
-if not IsSupported then
+elseif CurrentGame == "6099256669" then
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChan1374/YukiHub/main/AMenacingTimeline'))()
+else
 	warn("Game Not Supported!")
 end

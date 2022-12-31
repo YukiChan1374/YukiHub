@@ -1,6 +1,5 @@
 local CurrentGame = tostring(game.GameId)
 local IsSupported = false
-local SelectedGame
 
 local SupportedGames = {
 	"2050890865",

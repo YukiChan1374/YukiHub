@@ -95,14 +95,14 @@ local Slider = Tab:CreateSlider({
 	CurrentValue = 10,
 	Flag = "Slider1",
 	Callback = function(Value)
-		local gmt = getrawmetatable(game)
-		setreadonly(gmt, false)
-		local oldindex = gmt.__index
-		gmt.__index = newcclosure(function(self, b)
-    		if b == "JumpPower" then
-       		 return 50
-    		end
-    		return oldindex(self, b)
+		local mt = getrawmetatable(game)
+		local old
+		old = hookfunction(mt.__index, function(...)
+			local args = {...}
+			if args[2] == "WalkSpeed" then
+				return 16
+			end
+			return(...)
 		end)
 
 		game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
@@ -144,20 +144,14 @@ local Button = Tab:CreateButton({
 local Button = Tab:CreateButton({
 	Name = "Anti-Timestop",
 	Callback = function()
-		local meta = getrawmetatable(game)
-
-		setreadonly(meta, false)
-
-		local namecall = meta.__namecall
-
-		meta.__namecall = newcclosure(function(self, ...)
-    		local method = getnamecallmethod()
-    		local args = {...}
-
-    		if method == "FireServer" and tostring(self) == "Anchor" then
-       			return
-    		end
-    		return namecall(self, table.unpack(args))
+		local mt = getrawmetatable(game)
+		local old
+		old = hookfunction(mt.__namecall, function(...)
+			local method = getnamecallmethod()
+			if method == "FireServer" and tostring(self) == "Anchor" then
+				return 
+			end
+   			return old(...)
 		end)
 
 	Rayfield:Notify({

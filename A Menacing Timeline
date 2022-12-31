@@ -1,0 +1,434 @@
+local ssecuremode = true --Set to true to remove potential fake items
+--SecureMode
+if ssecuremode then
+	for i, v in pairs(workspace.Asda:GetChildren()) do
+		if v.Name == "???Diary" then
+			v:Destroy()
+		elseif v.Name == "GomuGomuNoMi" then
+			v:Destroy()
+		elseif v.Name == "GlitchDiary" then
+			v:Destroy()
+		elseif v.Name == "KwDiary" then
+			v:Destroy()
+		end
+		wait()
+	end
+end
+------------------------
+
+getfenv().lb3 = false
+getgenv().farm = false
+getgenv().instant = false
+getgenv().auto = false
+getgenv().garbage = false
+local afk = false
+local Time = 3
+
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+local Window = Rayfield:CreateWindow({
+	Name = "A Menacing Timeline | Yuki♡#4985",
+	LoadingTitle = "A Menacing Timeline Script",
+	LoadingSubtitle = "by Yuki♡#4985",
+	ConfigurationSaving = {
+		Enabled = false,
+		FolderName = nil,
+		FileName = "Yuki Hub"
+	},
+        Discord = {
+        	Enabled = false,
+        	Invite = "", 
+        	RememberJoins = true 
+        },
+	KeySystem = false,
+	KeySettings = {
+		Title = "Yuki Hub",
+		Subtitle = "Key System",
+		Note = "This is a private script! >_<",
+		FileName = "YukiKey",
+		SaveKey = false,
+		GrabKeyFromSite = false,
+		Key = "test"
+	}
+})
+
+Rayfield:Notify({
+    Title = "Version 1.0",
+    Content = "Welcome "..game.Players.LocalPlayer.DisplayName.."!",
+    Duration = 6.5,
+    Image = 4483362458,
+})
+
+local Tab = Window:CreateTab("Local Player", 6961018885)
+local Tab2 = Window:CreateTab("Items", 4431164867)
+local Tab3 = Window:CreateTab("Map", 4483345607)
+local Tab4 = Window:CreateTab("Misc", 3605022185)
+
+--Tab 1
+local Slider = Tab:CreateSlider({
+	Name = "WalkSpeed",
+	Range = {10, 500},
+	Increment = 10,
+	Suffix = "Speed",
+	CurrentValue = 10,
+	Flag = "Slider1",
+	Callback = function(Value)
+		local gmt = getrawmetatable(game)
+		setreadonly(gmt, false)
+		local oldindex = gmt.__index
+		gmt.__index = newcclosure(function(self, b)
+    		if b == "WalkSpeed" then
+       		 return 16
+    		end
+    		return oldindex(self, b)
+		end)
+
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+	end,
+})
+
+local Slider = Tab:CreateSlider({
+	Name = "JumpPower",
+	Range = {10, 500},
+	Increment = 10,
+	Suffix = "Power",
+	CurrentValue = 10,
+	Flag = "Slider1",
+	Callback = function(Value)
+		local gmt = getrawmetatable(game)
+		setreadonly(gmt, false)
+		local oldindex = gmt.__index
+		gmt.__index = newcclosure(function(self, b)
+    		if b == "JumpPower" then
+       		 return 50
+    		end
+    		return oldindex(self, b)
+		end)
+
+		game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+	end,
+})
+
+local Button = Tab:CreateButton({
+	Name = "Anti-AFK (ON/OFF)",
+	Callback = function()
+		if afk then
+			afk = false
+			Rayfield:Notify({
+    			Title = "AFK Manager",
+   				Content = "Anti-AFK has been disabled!",
+    			Duration = 6.5,
+   				Image = 4483362458,
+			})
+		else
+			afk = true
+			Rayfield:Notify({
+    			Title = "AFK Manager",
+   				Content = "Anti-AFK has been enabled!",
+    			Duration = 6.5,
+   				Image = 4483362458,
+			})
+
+		end
+		local vu = game:GetService("VirtualUser")
+		game:GetService("Players").LocalPlayer.Idled:connect(function()
+			if afk then
+   				vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+  				wait(1)
+   				vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+			end
+		end)
+	end,
+})
+
+local Button = Tab:CreateButton({
+	Name = "Anti-Timestop",
+	Callback = function()
+		local meta = getrawmetatable(game)
+
+		setreadonly(meta, false)
+
+		local namecall = meta.__namecall
+
+		meta.__namecall = newcclosure(function(self, ...)
+    		local method = getnamecallmethod()
+    		local args = {...}
+
+    		if method == "FireServer" and tostring(self) == "Anchor" then
+       			return
+    		end
+    		return namecall(self, table.unpack(args))
+		end)
+
+	Rayfield:Notify({
+    Title = "Anti-Timestop",
+    Content = "Successfully Enabled!",
+    Duration = 6.5,
+    Image = 4483362458,
+	})
+
+	end,
+})
+
+local Toggle = Tab:CreateToggle({
+	Name = "Last Breath Sans Inf Hp",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getfenv().lb3 = Value
+		if getfenv().lb3 then
+			lbinf()
+		end
+	end,
+})
+
+--Tab 2
+local Toggle = Tab2:CreateToggle({
+	Name = "AutoFarm",
+	CurrentValue = false,
+	Flag = "Toggle1", 
+	Callback = function(Value)
+		getgenv().farm = Value
+		if getgenv().farm then
+			autofarm()
+		end
+	end,
+})
+
+local Button = Tab2:CreateButton({
+	Name = "Item Notifier",
+	Callback = function()
+		notify()
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Fast Item Pickup",
+	CurrentValue = false,
+	Flag = "Toggle1", 
+	Callback = function(Value)
+		getgenv().instant = Value
+		if getgenv().instant then
+			Instant()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Auto-Pickup",
+	CurrentValue = false,
+	Flag = "Toggle1", 
+	Callback = function(Value)
+		keyrelease(0xA2)
+		getgenv().auto = Value
+		if getgenv().auto then
+			Auto()
+		end
+	end,
+})
+
+local Toggle = Tab2:CreateToggle({
+	Name = "Garbage Collector",
+	CurrentValue = false,
+	Flag = "Toggle1", 
+	Callback = function(Value)
+		getgenv().garbage = Value
+		if getgenv().garbage then
+			Garbage()
+		end
+	end,
+})
+
+--Tab 3
+local Button = Tab3:CreateButton({
+	Name = "Stand Storage",
+	Callback = function()
+		local CFrameEnd = CFrame.new(-2923, 179, 27)
+		local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+		tween:Play()
+		tween.Completed:Wait()
+	end,
+})
+
+
+--Tab 4
+local Slider = Tab4:CreateSlider({
+	Name = "Tween",
+	Range = {1, 10},
+	Increment = 1,
+	Suffix = "Second(s)",
+	CurrentValue = Time,
+	Flag = "Slider1",
+	Callback = function(Value)
+		Time = Value
+	end,
+})
+
+local Button = Tab4:CreateButton({
+	Name = "Clear Inventory",
+	Callback = function()
+		Rayfield:Notify({
+    	Title = "[!]Clear Inventory",
+    	Content = "Are you sure?",
+    	Duration = 6.5,
+   		Image = 4483362458,
+    	Actions = {
+        	Ignore = {
+            	Name = "Confirm",
+            	Callback = function()
+               	 	for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+						if v:IsA("Tool") then
+							v:Destroy()
+						end
+						task.wait()
+					end
+            	end
+			},
+		},
+	})
+
+	end,
+})
+
+local Button = Tab4:CreateButton({
+	Name = "Reset Character",
+	Callback = function()
+		game.Players.LocalPlayer.Character:BreakJoints()
+		Rayfield:Notify({
+    	Title = "[!]Reset Character",
+    	Content = "Killed LocalPlayer",
+    	Duration = 6.5,
+   		Image = 4483362458,
+	})
+
+	end,
+})
+
+local Button = Tab4:CreateButton({
+	Name = "Destroy Gui",
+	Callback = function()
+		Rayfield:Notify({
+    	Title = "[!]Destroy Gui",
+    	Content = "Are you sure?",
+    	Duration = 6.5,
+   		Image = 4483362458,
+    	Actions = {
+        	Ignore = {
+            	Name = "Confirm",
+            	Callback = function()
+					Rayfield:Destroy()
+            	end
+			},
+		},
+	})
+
+	end,
+})
+
+--Functions
+function lbinf()
+	spawn(function()
+		while getfenv().lb3 do
+			game:GetService("ReplicatedStorage").Lbphase3:FireServer()
+			wait(5)
+		end
+	end)
+end
+
+function autofarm()
+	spawn(function()
+		while getgenv().farm do
+			local hrp = game.Players.LocalPlayer.Character
+			for i, v in pairs(game.Workspace.Asda:GetChildren()) do
+				if hrp:FindFirstChild("HumanoidRootPart") and v.Name ~= "Arrow" and v.Name ~= "Banknote" and v.Name ~= "Rokakaka Fruit" and v.Name ~= "RokakakaFruit" and v.Name ~= "Arrov" and v.Name ~= "Oof" and v.Name ~= "DIO's Diary" and v.Name ~= "Vampire Mask" and v.Name ~= "Gold!" and v.Name ~= "Frog" and v.Name ~= "Water" and v.Name ~= "Shiny Diary" and v.Name ~= "Requiem Arrow" and v.Name ~= "Holy Corpse" and v.Name ~= "Jotaro's Diary" and v.Name ~= "CreppyPasta Diary" and v.Name ~= "KWDiary" and v.Name ~= "Kw Diary" and v.Name ~= "Act4 Holy Corpse" and v.Name ~= "CreppyPastaDiary" and v.Name ~= "Clacker Volley" and v.Name ~= "StoneOceanDiary" and v.Name ~= "Virus Arrow"  and v.Name ~= "?H?A?T?E?" and v.Name ~= "Sonic's Shoes" and v.Name ~= "AjaMask" and v.Name ~= "Recep Arrow" and v.Name ~= "Red Ring??" and v.Name ~= "NightmareDiary" and v.Name ~= "DragonBall" and v.Name ~= "Ope Ope No Mi" and v.Name ~= "TrollFace" and v.Name ~= "Camera" then
+					if v:FindFirstChild("Handle") and v.Handle:FindFirstChild("Attachment") then
+						v.Handle.Attachment.ProximityPrompt.HoldDuration = 0
+						print("Collecting... "..v.Name)
+						repeat wait()
+							local CFrameEnd = v.Handle.CFrame * CFrame.new(0, 10, 0)
+							local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+							tween:Play()
+							tween.Completed:Wait()
+						until not v:IsDescendantOf(workspace)
+					end
+				end
+				game:GetService("RunService").RenderStepped:Wait()
+			end
+			wait()
+		end
+	end)
+end
+
+function notify()
+	local hrp = game.Players.LocalPlayer.Character
+	for i, v in pairs(game.Workspace.Asda:GetChildren()) do
+		if hrp:FindFirstChild("HumanoidRootPart") and v.Name ~= "Arrow" and v.Name ~= "Banknote" and v.Name ~= "Rokakaka Fruit" and v.Name ~= "RokakakaFruit" and v.Name ~= "Arrov" and v.Name ~= "Oof" and v.Name ~= "DIO's Diary" and v.Name ~= "Vampire Mask" and v.Name ~= "Gold!" and v.Name ~= "Frog" and v.Name ~= "Water" and v.Name ~= "Shiny Diary" and v.Name ~= "Requiem Arrow" and v.Name ~= "Holy Corpse" and v.Name ~= "Jotaro's Diary" and v.Name ~= "CreppyPasta Diary" and v.Name ~= "KWDiary" and v.Name ~= "Kw Diary" and v.Name ~= "Act4 Holy Corpse" and v.Name ~= "CreppyPastaDiary" and v.Name ~= "Clacker Volley" and v.Name ~= "StoneOceanDiary" and v.Name ~= "Virus Arrow"  and v.Name ~= "?H?A?T?E?" and v.Name ~= "Sonic's Shoes" and v.Name ~= "AjaMask" and v.Name ~= "Recep Arrow" and v.Name ~= "Red Ring??" and v.Name ~= "NightmareDiary" and v.Name ~= "DragonBall" and v.Name ~= "Ope Ope No Mi" and v.Name ~= "TrollFace" and v.Name ~= "Camera" then
+			if v:FindFirstChild("Handle") and v.Handle:FindFirstChild("Attachment") then
+				v.Handle.Attachment.ProximityPrompt.HoldDuration = 0
+				Rayfield:Notify({
+    				Title = v.Name.. " Spawned!",
+    				Content = "",
+    				Duration = 6.5,
+   					Image = 4483362458,
+    				Actions = {
+        				Ignore = {
+            				Name = "Goto",
+            				Callback = function()
+               	 				--repeat wait()
+									local CFrameEnd = v.Handle.CFrame * CFrame.new(0, 10, 0)
+									local tween =  game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Time), {CFrame = CFrameEnd})
+									tween:Play()
+									tween.Completed:Wait()
+								--until not v:IsDescendantOf(workspace)
+							end
+
+						},
+					},
+				})
+			end
+		end
+		game:GetService("RunService").RenderStepped:Wait()
+	end
+end
+
+function Instant()
+	spawn(function()
+		while getgenv().instant do
+			for i, v in pairs(game.Workspace.Asda:GetChildren()) do
+				if v:FindFirstChild("Handle") then
+					if v.Handle:FindFirstChild("Attachment") then
+						if v.Handle.Attachment:FindFirstChild("ProximityPrompt") then
+							v.Handle.Attachment.ProximityPrompt.HoldDuration = 0
+						end
+					end
+				end
+				wait()
+			end
+		end
+	end)
+end
+
+function Auto()
+	spawn(function()
+		while getgenv().auto do
+			keypress(0xA2)
+			wait()
+			keyrelease(0xA2)
+		end
+	end)
+end
+
+function Garbage()
+	spawn(function()
+		while getgenv().garbage do
+			for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+				if v:IsA("Tool") and v.Name ~= "Arrow" and v.Name ~= "Banknote" and v.Name ~= "Rokakaka Fruit" and v.Name ~= "RokakakaFruit" and v.Name ~= "Arrov" and v.Name ~= "Oof" and v.Name ~= "DIO's Diary" and v.Name ~= "Vampire Mask" and v.Name ~= "Gold!" and v.Name ~= "Frog" and v.Name ~= "Water" and v.Name ~= "Shiny Diary" and v.Name ~= "Requiem Arrow" and v.Name ~= "Holy Corpse" and v.Name ~= "Jotaro's Diary" and v.Name ~= "CreppyPasta Diary" and v.Name ~= "KWDiary" and v.Name ~= "Kw Diary" and v.Name ~= "Act4 Holy Corpse" and v.Name ~= "CreppyPastaDiary" and v.Name ~= "Clacker Volley" and v.Name ~= "StoneOceanDiary" and v.Name ~= "Virus Arrow"  and v.Name ~= "?H?A?T?E?" and v.Name ~= "Sonic's Shoes" and v.Name ~= "AjaMask" and v.Name ~= "Recep Arrow" and v.Name ~= "Red Ring??" and v.Name ~= "NightmareDiary" and v.Name ~= "DragonBall" and v.Name ~= "Ope Ope No Mi" and v.Name ~= "TrollFace" and v.Name ~= "Camera" then
+					--keep
+				else
+					v:Destroy()
+				end
+				wait()
+			end
+		end
+	end)
+end

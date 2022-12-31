@@ -447,7 +447,12 @@ local Button = Tab3:CreateButton({
 local Button = Tab4:CreateButton({
 	Name = "Destroy GUI",
 	Callback = function()
-		Rayfield:Notify("Yuki", "Goodbye!", 9613807893)
+		Rayfield:Notify({
+			Title = "Yuki Hub",
+			Content = "Thank you for using!",
+			Duration = 6.5,
+			Image = 4483362458,
+		})
 		wait(2)
 		Rayfield:Destroy()
 	end,
@@ -459,7 +464,12 @@ function antirag()
 		while getfenv().knock do
 			game:GetService("RunService").RenderStepped:Wait()
 			if game.Players.LocalPlayer.Character:FindFirstChild("Knock") then
-				Rayfield:Notify("Ragdoll", "Ragdoll Removed from LocalPlayer", 4483362458)
+				Rayfield:Notify({
+					Title = "Yuki Hub",
+					Content = "Anti-Ragdoll has been enabled!",
+					Duration = 6.5,
+					Image = 4483362458,
+				})
 				game.Players.LocalPlayer.Character.Knock:Destroy()
 			end
 		end

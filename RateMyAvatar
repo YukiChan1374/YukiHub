@@ -1,0 +1,906 @@
+getfenv().AutoBoothToggle = false
+getfenv().AutoRateOthers = false
+getfenv().AutoRateSpecificPlayer = false
+getfenv().AutoBlacklistAll = false
+getfenv().AutoBlacklistOthers = false
+getfenv().AnimatedBlacklist = false
+getfenv().AutoRemoveBlacklist = false
+getfenv().AutoKnight = false
+
+local text1 = "Test"
+local timer = 0.1
+local speed = 200
+local pos
+
+local star = nil
+local starplayer
+local blacklistplr
+local selectedplr
+local imgid
+local text
+local MyTable = {}
+local FirstPlr = false
+local oldList = {"Press Refresh", ":D"}
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Rate Your Avatar GUI", "BloodTheme")
+
+--Booth
+local Tab1 = Window:NewTab("Booth")
+local BoothSection = Tab1:NewSection("Functions:")
+
+BoothSection:NewToggle("Auto Rent Booth", "Finds a booth", function(bool)
+	getfenv().AutoBoothToggle = bool
+	if getfenv().AutoBoothToggle then
+		AutoBooth()
+	end
+end)
+
+local BoothSection3 = Tab1:NewSection("Animated")
+
+BoothSection3:NewToggle("Anime Girl", "ToggleInfo", function(state)
+		getfenv().toggle1 = state
+	if getfenv().toggle1 then
+		booth1()
+	end
+end)
+
+BoothSection3:NewToggle("Kanna", "ToggleInfo", function(state)
+	getfenv().toggle1 = state
+	if getfenv().toggle1 then
+		booth2()
+	end
+end)
+
+BoothSection3:NewTextBox("Text: ", "Change the text on your booth", function(txt)
+	text1 = tostring(txt)
+end)
+
+
+local BoothSection2 = Tab1:NewSection("Booth")
+
+BoothSection2:NewTextBox("Text: ", "Change the text on your booth", function(txt)
+	text = tostring(txt)
+end)
+
+BoothSection2:NewTextBox("ImageID: ", "Change the ImageID on your booth", function(txt)
+	imgid = tonumber(txt)
+end)
+
+BoothSection2:NewButton("Update Booth", "Applies the Text and ImageID to your booth", function()
+	local A_2 = 
+		{
+			["DescriptionText"] = text, 
+			["ImageId"] = imgid
+		}
+	local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+	Event:FireServer("Update", A_2)
+end)
+
+BoothSection2:NewButton("Abandon Booth", "Abandon your booth", function()
+	local A_1 = "Abandon"
+	local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+	Event:FireServer(A_1)
+end)
+
+--Knight
+local Tab2 = Window:NewTab("Knight")
+local KnightSection = Tab2:NewSection("Functions:")
+
+KnightSection:NewButton("Become Knight", "Requires Knight Role to be open", function()
+	CheckKnight()
+end)
+
+KnightSection:NewButton("Give Sword", "Gives LocalPlayer Sword", function()
+	local A_1 = "ClassicSword"
+	local Event = game:GetService("ReplicatedStorage").RequestTool
+	Event:FireServer(A_1)
+end)
+
+KnightSection:NewToggle("Knight Sniper","Auto Claim Knight" , function(state)
+	getfenv().AutoKnight = state
+	if getfenv().AutoKnight then
+		Ksniper()
+	end
+end)
+
+--Rate
+local Tab3 = Window:NewTab("Rate")
+local RateSection = Tab3:NewSection("Functions:")
+
+RateSection:NewTextBox("Rating:", "Set Rating 1-5", function(txt)
+	star = tonumber(txt)
+	print("Rating Set:", star)
+end)
+
+RateSection:NewToggle("Auto Rate Others","Rates Other Players" , function(bool)
+	getfenv().AutoRateOthers = bool
+	if getfenv().AutoRateOthers then
+		RateOthers()
+	end
+end)
+
+local RateSection2 = Tab3:NewSection("Specific Player")
+
+local rtdropdown = RateSection2:NewDropdown("Player List","Rates a specific player", oldList, function(txt)
+	starplayer = txt
+	print("Player Set:", starplayer)
+end)
+
+RateSection2:NewButton("Refresh", "Refresh Player List", function()
+	refreshplr()
+	rtdropdown:Refresh(MyTable)
+end)
+
+
+RateSection2:NewToggle("Rate Player","Rates the specific player" , function(bool)
+	getfenv().AutoRateSpecificPlayer = bool
+	if getfenv().AutoRateSpecificPlayer then
+		RateSpecificPlayer()
+	end
+end)
+
+--Blacklist
+local Tab4 = Window:NewTab("Blacklist")
+local BlacklistSection = Tab4:NewSection("Functions:")
+
+BlacklistSection:NewToggle("Remove Blacklist", "Unblacklist Yourself from all booths", function(bool)
+	getfenv().AutoRemoveBlacklist = bool
+	if getfenv().AutoRemoveBlacklist then
+		RemoveBlacklist()
+	end
+end)
+
+BlacklistSection:NewToggle("Blacklist All","Blacklist you and others from your booth" , function(bool)
+	getfenv().AutoBlacklistAll = bool
+	if getfenv().AutoBlacklistAll then
+		BlacklistAll()
+	end
+end)
+
+BlacklistSection:NewToggle("Blacklist Others","Blacklist others from your booth" , function(bool)
+	getfenv().AutoBlacklistOthers = bool
+	if getfenv().AutoBlacklistOthers then
+		BlacklistOthers()
+	end
+end)
+
+BlacklistSection:NewToggle("Animated Blacklist","Blacklist and Unblaclist Everyone from your booth" , function(bool)
+	getfenv().AnimatedBlacklist = bool
+	if getfenv().AnimatedBlacklist then
+		animblacklist()
+	end
+end)
+
+BlacklistSection:NewButton("Unblacklist All", "Unblacklist Everyone from your booth", function()
+	UnblacklistAll()
+end)
+
+local BlacklistSection2 = Tab4:NewSection("Specific Player")
+
+local bldropdown = BlacklistSection2:NewDropdown("Player List","Blacklist a specific player from your booth", oldList, function(txt)
+	blacklistplr = txt
+end)
+
+BlacklistSection2:NewButton("Refresh", "Refresh Player List", function()
+	refreshplr()
+	bldropdown:Refresh(MyTable)
+end)
+
+BlacklistSection2:NewButton("Blacklist Player", "Blacklist the specific player from your booth", function()
+	for i, v in pairs(game.Players:GetPlayers()) do
+		if v.Name == blacklistplr then
+			local A_1 = "AddBlacklist"
+			local A_2 = v.Name
+			local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+			Event:FireServer(A_1, A_2)
+			wait()
+		end
+	end
+end)
+
+local Tab5 = Window:NewTab("Misc")
+local MiscSection = Tab5:NewSection("Functions:")
+
+MiscSection:NewButton("Premium Lounge", "Teleport to the premium lounge", function()
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5900.3701171875, -54.000011444092, 24.189353942871)
+end)
+
+MiscSection:NewButton("Infinite Yield FE", "Admin Commands", function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true)()
+end)
+
+MiscSection:NewKeybind("Toggle UI", "KeybindInfo", Enum.KeyCode.F, function()
+	Library:ToggleUI()
+end)
+
+local MiscSection2 = Tab5:NewSection("By: Yuki♡#4985")
+
+--New Update
+local Tab6 = Window:NewTab("Players")
+local PlrSection = Tab6:NewSection("Functions:")
+
+local plrdropdown = PlrSection:NewDropdown("Player List","Blacklist a specific player from your booth", oldList, function(txt)
+	selectedplr = txt
+end)
+
+PlrSection:NewTextBox("Player:", "Manually Put Player Name", function(txt)
+	selectedplr = txt
+end)
+
+PlrSection:NewButton("Kill", "Kill A Player", function()
+	kill()
+end)
+
+PlrSection:NewButton("Bring", "Bring A Player", function()
+	bring()
+end)
+
+PlrSection:NewButton("Bring2", "Bring A Player", function()
+	bring2()
+end)
+
+
+PlrSection:NewButton("Tool", "Required", function()
+	local A_1 = "ClassicSword"
+	local Event = game:GetService("ReplicatedStorage").RequestTool
+	Event:FireServer(A_1)
+end)
+
+PlrSection:NewButton("GoTo", "Teleport to Player", function()
+	local plr = game.Players.LocalPlayer.Character.HumanoidRootPart
+	plr.CFrame = game.Workspace:FindFirstChild(selectedplr).HumanoidRootPart.CFrame
+end)
+
+PlrSection:NewButton("Register Coor", "Teleport to Player", function()
+	pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+end)
+
+PlrSection:NewButton("Goto Coor", "Teleport to Player", function()
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+
+end)
+
+PlrSection:NewButton("Refresh", "Refresh Player List", function()
+	refreshplr()
+	plrdropdown:Refresh(MyTable)
+end)
+
+--Functions:
+function AutoBooth()
+	spawn(function()
+		while getfenv().AutoBoothToggle do
+			for i, v in pairs(game.Workspace:GetChildren()) do
+				if v.Name == "Booth" then
+					local clickdetector = v.Banner.ClickDetector
+					fireclickdetector(clickdetector)
+				end
+			end
+			wait()
+		end
+	end)
+end
+
+function CheckKnight()
+	local check = 0
+	for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+		if v.Team.Name == "Knight" then
+			print(v.Name, "is the Knight")
+			check = 1
+		end
+		wait()	
+	end
+
+	if check == 0 then
+		print("Knight Role Open")
+		local plr = game.Players.LocalPlayer.Character
+		plr.HumanoidRootPart.CFrame = game.Workspace.CrownPart.CFrame
+		wait(1)
+		fireproximityprompt(game.workspace.JewelleryStand.ProximityPrompt)
+	end
+end
+
+function Ksniper()
+	spawn(function() 
+	pcall(function()
+		while getfenv().AutoKnight do
+				local check = 0
+	for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+		if v.Team.Name == "Knight" then
+			print(v.Name, "is the Knight")
+			check = 1
+		end
+		wait()	
+	end
+
+	if check == 0 then
+		print("Knight Role Open")
+		local plr = game.Players.LocalPlayer.Character
+		plr.HumanoidRootPart.CFrame = game.Workspace.CrownPart.CFrame
+		wait(1)
+		fireproximityprompt(game.workspace.JewelleryStand.ProximityPrompt)
+	end
+		end
+	end)
+	end)
+end
+
+function RateOthers()
+	spawn(function()
+		while getfenv().AutoRateOthers do
+			local Players = game:GetService("Players")
+			for i, player in pairs(Players:GetPlayers()) do
+				local Event = game:GetService("ReplicatedStorage").PostRating
+				Event:FireServer(player, star)
+				wait()
+			end
+		end
+	end)
+end
+
+function RateSpecificPlayer()
+	spawn(function()
+		while getfenv().AutoRateSpecificPlayer do
+			local Players = game:GetService("Players")
+			for i, player in pairs(Players:GetPlayers()) do
+				if player.Name == starplayer then
+					local Event = game:GetService("ReplicatedStorage").PostRating
+					Event:FireServer(player, star)
+				end
+				wait()
+			end	
+		end
+	end)
+end
+
+function BlacklistAll()
+	spawn(function()
+		while getfenv().AutoBlacklistAll do
+			for i, v in pairs(game.Players:GetPlayers()) do
+				local A_1 = "AddBlacklist"
+				local A_2 = v.Name
+				local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+				Event:FireServer(A_1, A_2)
+				wait()
+			end
+			wait(1)
+		end
+	end)
+end
+
+function BlacklistOthers()
+	spawn(function()
+		while getfenv().AutoBlacklistOthers do
+			for i, v in pairs(game.Players:GetPlayers()) do
+				if v.Name == game.Players.LocalPlayer.Name then
+				else
+					local A_1 = "AddBlacklist"
+					local A_2 = v.Name
+					local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+					Event:FireServer(A_1, A_2)
+					wait()
+				end
+			end
+			wait(1)
+		end
+	end)
+end
+
+function RemoveBlacklist()
+	while getfenv().AutoRemoveBlacklist do
+		wait()
+		for i, v in pairs(game.Workspace:GetChildren()) do
+			if v:IsA("Part") and v.BrickColor.Name == "Crimson" then
+				v:Destroy()
+			end
+		end
+	end
+end
+
+function UnblacklistAll()
+	for i, v in pairs(game.Players:GetPlayers()) do
+		local A_1 = "RemoveBlacklist"
+		local A_2 = v.Name
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_2)
+		wait()
+	end
+
+end
+
+function animblacklist()
+	spawn(function()
+		while getfenv().AnimatedBlacklist do
+			for i, v in pairs(game.Players:GetPlayers()) do
+				local A_1 = "AddBlacklist"
+				local A_2 = v.Name
+				local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+				Event:FireServer(A_1, A_2)
+				wait()
+			end
+			wait()
+			for i, v in pairs(game.Players:GetPlayers()) do
+				local A_1 = "RemoveBlacklist"
+				local A_2 = v.Name
+				local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+				Event:FireServer(A_1, A_2)
+				wait()
+			end
+		end
+	end)
+end
+
+function refreshplr()
+	if FirstPlr == true then
+		MyTable = {}
+	end
+	for i, v in pairs(game.Players:GetPlayers()) do
+		table.insert(MyTable, v.Name)
+		wait()
+	end
+	FirstPlr = true
+end
+
+function bring()
+	local NOW
+	local Target
+	Target = selectedplr
+
+	NOW = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+	game.Players.LocalPlayer.Character.Humanoid.Name = 1
+	local l = game.Players.LocalPlayer.Character["1"]:Clone()
+	l.Parent = game.Players.LocalPlayer.Character
+	l.Name = "Humanoid"
+	wait(0.1)
+	game.Players.LocalPlayer.Character["1"]:Destroy()
+	game.Workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character
+	game.Players.LocalPlayer.Character.Animate.Disabled = true
+	wait(0.1)
+	game.Players.LocalPlayer.Character.Animate.Disabled = false
+	game.Players.LocalPlayer.Character.Humanoid.DisplayDistanceType = "None"
+	for i,v in pairs(game:GetService'Players'.LocalPlayer.Backpack:GetChildren())do
+		game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+	end
+	local function tp(player,player2)
+		local char1,char2=player.Character,player2.Character
+		if char1 and char2 then
+			char1.HumanoidRootPart.CFrame = char2.HumanoidRootPart.CFrame
+		end
+	end
+	local function getout(player,player2)
+		local char1,char2=player.Character,player2.Character
+		if char1 and char2 then
+			char1:MoveTo(char2.Head.Position)
+		end
+	end
+	tp(game.Players[Target], game.Players.LocalPlayer)
+	wait(0.1)
+	tp(game.Players[Target], game.Players.LocalPlayer)
+	wait(0.3)
+	getout(game.Players.LocalPlayer, game.Players[Target])
+	wait(0.2)
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = NOW
+end
+
+function bring2()
+	local NOW
+	local Target
+	Target = selectedplr
+
+	NOW = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+	game.Players.LocalPlayer.Character.Humanoid.Name = 1
+	local l = game.Players.LocalPlayer.Character["1"]:Clone()
+	l.Parent = game.Players.LocalPlayer.Character
+	l.Name = "Humanoid"
+	wait(0.1)
+	game.Players.LocalPlayer.Character["1"]:Destroy()
+	game.Workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character
+	game.Players.LocalPlayer.Character.Animate.Disabled = true
+	wait(0.1)
+	game.Players.LocalPlayer.Character.Animate.Disabled = false
+	game.Players.LocalPlayer.Character.Humanoid.DisplayDistanceType = "None"
+	for i,v in pairs(game:GetService'Players'.LocalPlayer.Backpack:GetChildren())do
+		game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+	end
+
+	game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+	--local function tp(player,player2)
+	--	local char1,char2=player.Character,player2.Character
+	--	if char1 and char2 then
+			--char1.HumanoidRootPart.CFrame = char2.HumanoidRootPart.CFrame
+	--	-end
+	--end
+	--local function getout(player,player2)
+	--	local char1,char2=player.Character,player2.Character
+	--	if char1 and char2 then
+		--	char1:MoveTo(char2.Head.Position)
+		--end
+--	end
+	--tp(game.Players[Target], game.Players.LocalPlayer)
+	--wait(0.1)
+	--tp(game.Players[Target], game.Players.LocalPlayer)
+--	wait(0.3)
+--	getout(game.Players.LocalPlayer, game.Players[Target])
+	--wait(0.2)
+	--game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = NOW
+end
+
+function kill()
+	local Target
+	Target = selectedplr
+
+	game.Players.LocalPlayer.Character.Humanoid.Name = 1
+	local l = game.Players.LocalPlayer.Character["1"]:Clone()
+	l.Parent = game.Players.LocalPlayer.Character
+	l.Name = "Humanoid"
+	wait(0.1)
+	game.Players.LocalPlayer.Character["1"]:Destroy()
+	game.Workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character
+	game.Players.LocalPlayer.Character.Animate.Disabled = true
+	wait(0.1)
+	game.Players.LocalPlayer.Character.Animate.Disabled = false
+	game.Players.LocalPlayer.Character.Humanoid.DisplayDistanceType = "None"
+	for i,v in pairs(game:GetService'Players'.LocalPlayer.Backpack:GetChildren())do
+		game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+	end
+	wait(0.1)
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[Target].Character.HumanoidRootPart.CFrame
+	wait(0.1)
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[Target].Character.HumanoidRootPart.CFrame
+	wait(0.2)
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-10000,-100, -10000))
+end
+
+function booth1()
+	local A_1 = "Update"
+	local A_2 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210653124 --1
+		}
+
+	local A_3 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210654297 --2
+		}
+	local A_4 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210655533 --3
+		}
+
+	local A_5 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210657016 --4
+		}
+
+	local A_6 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210658076 --5
+		}
+	local A_7 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210659663 --6
+		}
+
+	local A_8 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210661252 --7
+		}
+
+	local A_9 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210663078 --8
+		}
+
+	local A_10 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210664525 --9
+		}
+
+	local A_11 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210666217 --10
+		}
+
+	local A_12 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10210667777 --11
+		}
+
+spawn(function()
+	while getfenv().toggle1 do
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_2)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_3)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_4)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_5)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_6)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_7)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_8)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_9)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_10)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_11)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_12)
+		wait(timer)
+	end
+end)
+end
+
+function booth2()
+	local A_1 = "Update"
+	local A_2 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209534960 --1
+		}
+
+	local A_3 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209536342 --2
+		}
+	local A_4 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209537084 --3
+		}
+
+	local A_5 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209540261 --4
+		}
+
+	local A_6 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209541276 --5
+		}
+	local A_7 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209542140 --6
+		}
+
+	local A_8 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209542688 --7
+		}
+
+	local A_9 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209543551 --8
+		}
+
+	local A_10 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209544396 --9
+		}
+
+	local A_11 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209545133 --10
+		}
+
+	local A_12 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209549058 --11
+		}
+
+	local A_13 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209549761 --12
+		}
+
+	local A_14 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209550821 --13
+		}
+
+	local A_15 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209552240 --14
+		}
+
+	local A_16 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209553247 --15
+		}
+
+	local A_17 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209554642 --16
+		}
+
+	local A_18 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209556046 --17
+		}
+
+	local A_19 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209567114 --18
+		}
+	local A_20 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209568423 --19
+		}
+	local A_21 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209569318 --20
+		}
+	local A_22 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209570012 --21
+		}
+	local A_23 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209572941 --22
+		}
+	local A_24 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209574050 --23
+		}
+	local A_25 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209575220 --24
+		}
+	local A_26 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209576056 --25
+		}
+	local A_27 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209577064 --26
+		}
+	local A_28 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209577822 --27
+		}
+	local A_29 = 
+		{
+			["DescriptionText"] = text1, 
+			["ImageId"] = 10209578887 --28
+		}
+
+	spawn(function()
+		while getfenv().toggle1 do
+			local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+			Event:FireServer(A_1, A_2)
+			wait(timer)
+			local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+			Event:FireServer(A_1, A_3)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_4)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_5)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_6)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_7)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_8)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_9)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_10)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_11)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_12)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_13)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_14)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_15)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_16)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_17)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_18)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_19)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_20)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_21)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_22)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_23)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_24)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_25)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_26)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_27)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_28)
+		wait(timer)
+		local Event = game:GetService("ReplicatedStorage").CustomiseBooth
+		Event:FireServer(A_1, A_29)
+		wait(timer)
+	end
+	end)
+end

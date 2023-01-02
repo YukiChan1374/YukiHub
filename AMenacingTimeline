@@ -84,7 +84,7 @@ local Slider = Tab:CreateSlider({
 		local old
 		old = hookfunction(mt.__index, function(...)
 			local args = {...}
-			if args[2] == "WalkSpeed" then
+			if args[2] == "JumpPower" then
 				return 16
 			end
 			return(...)
@@ -207,7 +207,7 @@ local Toggle = Tab2:CreateToggle({
 })
 
 local Toggle = Tab2:CreateToggle({
-	Name = "Garbage Collector",
+	Name = "Clean Inventory Mode",
 	CurrentValue = false,
 	Flag = "Toggle1", 
 	Callback = function(Value)

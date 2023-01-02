@@ -58,14 +58,14 @@ local Slider = Tab:CreateSlider({
 	CurrentValue = 10,
 	Flag = "Slider1",
 	Callback = function(Value)
-		local gmt = getrawmetatable(game)
-		setreadonly(gmt, false)
-		local oldindex = gmt.__index
-		gmt.__index = newcclosure(function(self, b)
-    		if b == "WalkSpeed" then
-       		 return 16
-    		end
-    		return oldindex(self, b)
+		local mt = getrawmetatable(game)
+		local old
+		old = hookfunction(mt.__index, function(...)
+			local args = {...}
+			if args[2] == "WalkSpeed" then
+				return 16
+			end
+			return old(...)
 		end)
 
 		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value

@@ -87,7 +87,7 @@ local Slider = Tab:CreateSlider({
 			if args[2] == "JumpPower" then
 				return 50
 			end
-			return(...)
+			return old(...)
 		end)
 
 		game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value

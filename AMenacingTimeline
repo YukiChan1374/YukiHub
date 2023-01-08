@@ -273,7 +273,7 @@ local Button = Tab4:CreateButton({
 		if totalplrs >= 2 then
 			Rayfield:Notify({
 					Title = "Anti-Cheat Bypass",
-					Content = "Rejoining!",
+					Content = "Rejoining to attempt to bypass!",
 					Duration = 6.5,
 					Image = 4483362458,
 			})
@@ -312,13 +312,7 @@ local Button = Tab4:CreateButton({
 				
 				repeat wait() until workspace:FindFirstChild("Asda")
 				loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChanAh/YukiHub/main/AMenacingTimeline'))()
-				
-				Rayfield:Notify({
-					Title = "Anti-Cheat Successfully Bypassed!",
-					Content = "Have Fun!",
-					Duration = 6.5,
-					Image = 4483362458,
-				})
+				warn("Anti-Cheat Successfully Bypassed!")
 					
 			]])
 			local lplr = game:GetService("Players").LocalPlayer

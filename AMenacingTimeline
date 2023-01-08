@@ -17,6 +17,7 @@ end
 ------------------------
 
 getfenv().lb3 = false
+getgenv().sonicx = false
 getgenv().farm = false
 getgenv().instant = false
 getgenv().auto = false
@@ -149,6 +150,23 @@ local Button = Tab:CreateButton({
 	end,
 })
 
+local Button = Tab:CreateButton({
+	Name = "No Cooldown",
+	Callback = function()
+	local originalfunction = hookfunction(wait, function()
+		return originalfunction()
+	end)
+
+	Rayfield:Notify({
+    Title = "No Cooldown",
+    Content = "Successfully Enabled!",
+    Duration = 6.5,
+    Image = 4483362458,
+	})
+
+	end,
+})
+
 local Toggle = Tab:CreateToggle({
 	Name = "Last Breath Sans Inf Hp",
 	CurrentValue = false,
@@ -157,6 +175,18 @@ local Toggle = Tab:CreateToggle({
 		getfenv().lb3 = Value
 		if getfenv().lb3 then
 			lbinf()
+		end
+	end,
+})
+
+local Toggle = Tab:CreateToggle({
+	Name = "Sonic.exe Inf Hp",
+	CurrentValue = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		getgenv().sonicx = Value
+		if getgenv().sonicx then
+			exeinf()
 		end
 	end,
 })
@@ -231,6 +261,81 @@ local Button = Tab3:CreateButton({
 
 
 --Tab 4
+local Button = Tab4:CreateButton({
+	Name = "Anti-Cheat Bypass",
+	Callback = function()
+		local plrs = game:GetService("Players")
+		local totalplrs = 0
+		for i, v in pairs(plrs:GetChildren()) do
+			totalplrs = totalplrs + 1
+		end
+		
+		if totalplrs >= 2 then
+			Rayfield:Notify({
+					Title = "Anti-Cheat Bypass",
+					Content = "Rejoining!",
+					Duration = 6.5,
+					Image = 4483362458,
+			})
+			
+			
+			queue_on_teleport([[
+			
+				local GetFullName = game.GetFullName
+				local Hook; 
+				Hook = hookfunction(getrenv().require, newcclosure(function(...)
+					local Args = {...}
+
+					if not checkcaller() then
+						if (GetFullName(getcallingscript()) == ".ClientMover" and Args[1].Name == "Client") then
+							rconsolewarn("Anti-Cheat blocked from running, have fun exploiting with method { Require:Adonis|Client }");
+							return wait(10e1)
+						end
+					end
+
+					return Hook(unpack(Args))
+				end))
+					
+				local Hook; 
+				Hook = hookfunction(getrenv().require, newcclosure(function(...)
+					local Args = {...}
+
+					if not checkcaller() then
+						if (getcallingscript().Name == "HDAdminStarterPlayer" and Args[1].Name == "MainFramework") then
+							rconsolewarn("Anti-Cheat blocked from running, have fun exploiting with method { Require:HDAdmin|MainFramework }");
+							return wait(10e1)
+						end
+					end
+
+					return Hook(unpack(Args))
+				end))
+				
+				repeat wait() until workspace:FindFirstChild("Asda")
+				loadstring(game:HttpGet('https://raw.githubusercontent.com/YukiChanAh/YukiHub/main/AMenacingTimeline'))()
+				
+				Rayfield:Notify({
+					Title = "Anti-Cheat Successfully Bypassed!",
+					Content = "Have Fun!",
+					Duration = 6.5,
+					Image = 4483362458,
+				})
+					
+			]])
+			local lplr = game:GetService("Players").LocalPlayer
+			game:GetService("TeleportService"):Teleport(game.PlaceId, lplr)
+			
+		else
+			Rayfield:Notify({
+				Title = "[!]Private Server Detected",
+				Content = "Rejoining is not possible! Need at least 2 players in the server!",
+				Duration = 6.5,
+				Image = 4483362458,
+			})
+		end
+		
+	end,
+})
+
 local Slider = Tab4:CreateSlider({
 	Name = "Tween",
 	Range = {1, 10},
@@ -274,11 +379,11 @@ local Button = Tab4:CreateButton({
 	Callback = function()
 		game.Players.LocalPlayer.Character:BreakJoints()
 		Rayfield:Notify({
-    	Title = "[!]Reset Character",
-    	Content = "Killed LocalPlayer",
-    	Duration = 6.5,
-   		Image = 4483362458,
-	})
+			Title = "[!]Reset Character",
+			Content = "Killed LocalPlayer",
+			Duration = 6.5,
+			Image = 4483362458,
+		})
 
 	end,
 })
@@ -309,7 +414,19 @@ function lbinf()
 	spawn(function()
 		while getfenv().lb3 do
 			game:GetService("ReplicatedStorage").Lbphase3:FireServer()
-			wait(5)
+			wait()
+		end
+	end)
+end
+
+function exeinf()
+	spawn(function()
+		while getgenv().sonicx do
+			local args = {
+				[1] = "nohi"
+			}
+			game:GetService("ReplicatedStorage").ExeEffects:FireServer(unpack(args))
+			wait()
 		end
 	end)
 end
